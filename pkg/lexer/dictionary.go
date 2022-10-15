@@ -6,8 +6,7 @@ import (
 )
 
 const (
-	TokenEof TokenType = iota
-	TokenIntend
+	TokenIntend TokenType = iota
 	TokenDot
 	TokenComma
 
@@ -72,6 +71,5 @@ func CreateDictionary() TokenDictionary {
 		TokenComma:                  initializeAsserter(","),
 		TokenParenthesisRoundLeft:   initializeAsserter("\\("),
 		TokenParenthesisRoundRight:  initializeAsserter("\\)"),
-		//TokenEof:                    initializeAsserter(""),
 	}
 }
