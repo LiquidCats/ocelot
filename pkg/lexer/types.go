@@ -20,5 +20,5 @@ type Lexer struct {
 }
 
 type ILexer interface {
-	Tokens(text string) ([]*Token, error)
+	Tokenize(text string) ([]*Token, error)
 }
