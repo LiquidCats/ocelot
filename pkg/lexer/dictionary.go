@@ -24,6 +24,7 @@ const (
 	TokenScalarInt
 	TokenScalarFloat
 	TokenScalarBool
+	TokenScalarNull
 
 	// Operators
 	TokenOperatorIs
@@ -56,6 +57,7 @@ func CreateDictionary() TokenDictionary {
 		TokenScalarInt:              initializeAsserter("[-]?[0-9]{1,10}"),
 		TokenScalarFloat:            initializeAsserter("[-]?([0-9]{0,10}[.])?[0-9]{1,8}"),
 		TokenScalarBool:             initializeAsserter("true|false"),
+		TokenScalarNull:             initializeAsserter("null"),
 		TokenOperatorIs:             initializeAsserter("is|="),
 		TokenOperatorNot:            initializeAsserter("!=|not"),
 		TokenOperatorIn:             initializeAsserter("in"),
