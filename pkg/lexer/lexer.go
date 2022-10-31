@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-func (l *Lexer) Tokens(text string) ([]*Token, error) {
+func (l *Lexer) Tokenize(text string) ([]*Token, error) {
 	l.setText(text)
 
 	for {
