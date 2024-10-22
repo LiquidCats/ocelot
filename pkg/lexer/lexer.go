@@ -1,65 +1,52 @@
 package lexer
 
 import (
-	"strings"
+	"regexp"
 )
 
-func (l *Lexer) Tokenize(text string) ([]*Token, error) {
-	l.setText(text)
-
-	for {
-		shouldGoOn, err := l.next()
-
-		if nil != err {
-			return nil, err
-		}
-
-		if nil == err && false == shouldGoOn {
-			break
-		}
-	}
-
-	return l.tokens, nil
+type Lexer struct {
+	dictionary map[TokenType]*regexp.Regexp
 }
 
-func (l *Lexer) next() (shouldGoOn bool, err error) {
-	if l.position >= len(l.text) {
-		return false, nil
-	}
+type Tokenizer interface {
+	Tokenize(text string) ([]Token, error)
+}
 
-	for tokenType, r := range l.dictionary {
-		stringIndex := r.FindStringIndex(l.text)
+func (l *Lexer) Tokenize(source string) (tokens []Token, err error) {
+	var position int
 
-		if 0 != len(stringIndex) {
-			if TokenIntend == tokenType { // skip all white spaces
-				l.move(stringIndex)
-				continue
+	for position < len(source) {
+		matched := false
+
+		for tokenType, handler := range l.dictionary {
+			stringIndex := handler.FindStringIndex(source[position:])
+			if stringIndex != nil && stringIndex[0] == 0 {
+				if tokenType == TokenIntend { // skip all white spaces
+					position += stringIndex[1]
+					continue
+				}
+
+				token := Token{
+					Type:     tokenType,
+					Position: position,
+					Value:    source[position+stringIndex[0] : position+stringIndex[1]],
+				}
+
+				tokens = append(tokens, token)
+				position += stringIndex[1]
+				matched = true
+
+				break
 			}
+		}
 
-			token := &Token{
-				Type:     tokenType,
-				Position: l.position,
-				Value:    l.text[stringIndex[0]:stringIndex[1]],
-			}
-
-			l.tokens = append(l.tokens, token)
-			l.move(stringIndex)
-
-			return true, nil
+		if !matched {
+			err = LexicalError{position}
+			return
 		}
 	}
 
-	return false, LexicalError{l.position}
-}
-
-func (l *Lexer) setText(text string) {
-	l.text = strings.ToLower(text)
-	l.position = 0
-}
-
-func (l *Lexer) move(pos []int) {
-	l.position += pos[1]
-	l.text = l.text[pos[1]:]
+	return
 }
 
 func NewLexer(dictionary TokenDictionary) *Lexer {
