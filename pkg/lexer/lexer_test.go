@@ -47,6 +47,77 @@ func TestLexer_Tokenize(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:       "complex lexical comparison",
+			expression: `(animal is "cat" or animal is "dog") and color is "black"`,
+			expected: []lexer.Token{
+				{
+					Type:     lexer.TokenParenthesisRoundLeft,
+					Value:    "(",
+					Position: 0,
+				},
+				{
+					Type:     lexer.TokenVariable,
+					Value:    "animal",
+					Position: 5,
+				},
+				{
+					Type:     lexer.TokenOperatorIs,
+					Value:    `is`,
+					Position: 6,
+				},
+				{
+					Type:     lexer.TokenScalarString,
+					Value:    `"cat"`,
+					Position: 6,
+				},
+				{
+					Type:     lexer.TokenOperatorOr,
+					Value:    `or`,
+					Position: 6,
+				},
+				{
+					Type:     lexer.TokenVariable,
+					Value:    `animal`,
+					Position: 6,
+				},
+				{
+					Type:     lexer.TokenOperatorIs,
+					Value:    `is`,
+					Position: 6,
+				},
+				{
+					Type:     lexer.TokenScalarString,
+					Value:    `"dog"`,
+					Position: 6,
+				},
+				{
+					Type:     lexer.TokenParenthesisRoundRight,
+					Value:    ")",
+					Position: 0,
+				},
+				{
+					Type:     lexer.TokenOperatorAnd,
+					Value:    "and",
+					Position: 0,
+				},
+				{
+					Type:     lexer.TokenVariable,
+					Value:    "color",
+					Position: 0,
+				},
+				{
+					Type:     lexer.TokenOperatorIs,
+					Value:    `is`,
+					Position: 6,
+				},
+				{
+					Type:     lexer.TokenScalarString,
+					Value:    `"black"`,
+					Position: 6,
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {
